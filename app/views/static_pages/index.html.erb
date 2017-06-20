@@ -1,6 +1,9 @@
 <section class="todoapp">
   <header class="header">
     <h1>todos</h1>
+    <form id="new-form">
+      <input type="text" class="new-todo">
+    </form>
   </header>
 
   <section class="main">
@@ -12,7 +15,15 @@
 
 <script>
   $(function(){
+    $('#new-form').submit(function(event){
+      event.preventDefault();
+      var textBox = $('.new-todo');
+      console.log( "Task is: " + textBox.val() );
+    });
 
+    // The taskHTML method takes in a javascript representation 
+    // of the task and produces an HTML representation using 
+    // <li> tags
     function taskHtml(task) {
       var checkedStatus = task.done? "checked" : "" ;
       var liString = '<li><div class="view"><input class="toggle" type="checkbox"' +

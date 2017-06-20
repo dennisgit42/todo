@@ -2,6 +2,12 @@
 $(function(){
   
   Paloma.start();
+
+  Paloma.controller('StaticPages', {
+    index: function(){
+      alert("Alert triggered just for index page showing tasks.");
+    }
+  });
   // The taskHTML method takes in a javascript representation 
   // of the task and produces an HTML representation using 
   // <li> tags

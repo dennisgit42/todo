@@ -1,13 +1,11 @@
 
+
 $(function(){
   
   Paloma.start();
 
-  Paloma.controller('StaticPages', {
-    index: function(){
-      alert("Alert triggered just for index page showing tasks.");
-    }
-  });
+
+
   // The taskHTML method takes in a javascript representation 
   // of the task and produces an HTML representation using 
   // <li> tags
@@ -17,7 +15,8 @@ $(function(){
       " data-id='" + task.id + "'" +
       checkedStatus + 
       '><label>' +
-      task.title + 
+      task.title +
+      '<button class="destroy"></button>' +  
       '</label></div></li>';
     return liString;
   }
@@ -65,7 +64,15 @@ $(function(){
       var ulTodo = $('.todo-list');
       ulTodo.append(htmlString);
       $('.toggle').click(toggleTask);
+      $('.new-todo').val("");
     })
-  });  
+  }); 
+
+  $('.destroy').click(function(e){
+    var itemId = $(e.target).data('id');
+    $.post("/tasks/" + itemId, function(data, status){
+      console.log('data: ' + data + 'status: ' + status);
+    })
+  })
 
 });

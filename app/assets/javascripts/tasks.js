@@ -11,14 +11,16 @@ $(function(){
   // <li> tags
   function taskHtml(task) {
     var checkedStatus = task.done? "checked" : "" ;
-    var liString = '<li><div class="view"><input class="toggle" type="checkbox"' +
+    var liClass = task.done? "completed" : "";
+    var liElement = '<li id="listItem-' + task.id + '" class="' + liClass + '">' + 
+      '<div class="view"><input class="toggle" type="checkbox"' +
       " data-id='" + task.id + "'" +
       checkedStatus + 
       '><label>' +
       task.title +
       '<button class="destroy"></button>' +  
       '</label></div></li>';
-    return liString;
+    return liElement;
   }
 
 
@@ -36,7 +38,13 @@ $(function(){
       task: {
         done: doneValue
       }
+    }).success(function(data){
+      var liHtml = taskHtml(data)
+      var $li = $("#listItem-" + data.id);
+      $li.replaceWith(liHtml);
+      $('.toggle').change(toggleTask);
     });
+
   }
 
 
@@ -48,7 +56,7 @@ $(function(){
       });
       $('.todo-list').html(htmlString);
 
-      $('.toggle').click(toggleTask);
+      $('.toggle').change(toggleTask);
   });
 
   $('#new-form').submit(function(event){
@@ -63,7 +71,7 @@ $(function(){
       var htmlString = taskHtml(data);
       var ulTodo = $('.todo-list');
       ulTodo.append(htmlString);
-      $('.toggle').click(toggleTask);
+      $('.toggle').change(toggleTask);
       $('.new-todo').val("");
     })
   }); 

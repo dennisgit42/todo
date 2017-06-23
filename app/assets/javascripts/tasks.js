@@ -1,6 +1,6 @@
 
 
-$(function(){
+$( document ).ready(function(){
   
   Paloma.start();
 
@@ -47,7 +47,7 @@ $(function(){
 
   }
 
-
+  console.log("Going to add handler to " + $(".destroy").length + " items.");
   $.get("/tasks").success( function(data){
       var htmlString = "";
       
@@ -57,6 +57,7 @@ $(function(){
       $('.todo-list').html(htmlString);
 
       $('.toggle').change(toggleTask);
+      console.log("Going to add handler to " + $(".destroy").length + " items.");
   });
 
   $('#new-form').submit(function(event){
@@ -73,14 +74,21 @@ $(function(){
       ulTodo.append(htmlString);
       $('.toggle').change(toggleTask);
       $('.new-todo').val("");
-    })
+    });
   }); 
 
-  $('.destroy').click(function(e){
+  console.log("Going to add handler to " + $(".destroy").length + " items.");
+  $('.destroy').click(function(e){ 
+    alert("Have reached first line of click function!");  
     var itemId = $(e.target).data('id');
-    $.post("/tasks/" + itemId, function(data, status){
-      console.log('data: ' + data + 'status: ' + status);
+    $.get("/tasks").success(function(data){
+      _method: "DELETE"
     })
-  })
+    console.log("deleted the task: " + itemId);
+    alert("Have reached last line of click function!");  
+  });
+  console.log("Going to add handler to " + $(".destroy").length + " items.");
 
 });
+
+

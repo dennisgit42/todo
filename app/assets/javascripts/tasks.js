@@ -1,5 +1,3 @@
-
-
 $( document ).ready(function(){
   
   Paloma.start();
@@ -18,7 +16,8 @@ $( document ).ready(function(){
       checkedStatus + 
       '><label>' +
       task.title +
-      '<button class="destroy"></button>' +  
+      "<button class='destroy' data-id='" + task.id + "'" +
+      "></button>" +  
       '</label></div></li>';
     return liElement;
   }
@@ -44,20 +43,31 @@ $( document ).ready(function(){
       $li.replaceWith(liHtml);
       $('.toggle').change(toggleTask);
     });
+  }
+
+  function deleteTask(event, data){
 
   }
 
-  console.log("Going to add handler to " + $(".destroy").length + " items.");
-  $.get("/tasks").success( function(data){
-      var htmlString = "";
-      
-      $.each(data, function(index, task){
-        htmlString += taskHtml(task);
-      });
-      $('.todo-list').html(htmlString);
 
-      $('.toggle').change(toggleTask);
-      console.log("Going to add handler to " + $(".destroy").length + " items.");
+  $.get("/tasks").success( function(data){
+    var htmlString = "";
+    $.each(data, function(index, task){
+      htmlString += taskHtml(task);
+    });
+    $('.todo-list').html(htmlString);
+
+    $('.toggle').change(toggleTask);
+    $(document).on('click', '.destroy', function(e){
+      e.preventDefault();
+      var taskId = $(e.target).data('id');
+      var liElement = $(e.target).parents('li');
+      $.ajax({
+        method: 'DELETE',
+        url: '/tasks/' + taskId
+      });
+      liElement.remove();
+    });
   });
 
   $('#new-form').submit(function(event){
@@ -68,26 +78,28 @@ $( document ).ready(function(){
         title: textBox.val()
       }
     };
-    $.post("/tasks", payload).success(function(data){
+    // $.post("/tasks", payload).success(function(data){
+    //   var htmlString = taskHtml(data);
+    //   var ulTodo = $('.todo-list');
+    //   ulTodo.append(htmlString);
+    //   $('.toggle').change(toggleTask);
+    //   $('.new-todo').val("");
+    // });
+
+    $.ajax({
+      url: "/tasks", 
+      data: payload,
+      method: "POST",
+    }).success(function(data){
       var htmlString = taskHtml(data);
       var ulTodo = $('.todo-list');
       ulTodo.append(htmlString);
       $('.toggle').change(toggleTask);
       $('.new-todo').val("");
     });
-  }); 
-
-  console.log("Going to add handler to " + $(".destroy").length + " items.");
-  $('.destroy').click(function(e){ 
-    alert("Have reached first line of click function!");  
-    var itemId = $(e.target).data('id');
-    $.get("/tasks").success(function(data){
-      _method: "DELETE"
-    })
-    console.log("deleted the task: " + itemId);
-    alert("Have reached last line of click function!");  
   });
-  console.log("Going to add handler to " + $(".destroy").length + " items.");
+
+
 
 });
 
